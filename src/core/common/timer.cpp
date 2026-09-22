@@ -44,9 +44,9 @@ void ScopedTimer::setup_full_name()
 
 namespace uipc
 {
-bool Timer::m_global_on = false;
+thread_local bool Timer::m_global_on = false;
 
-std::function<void()> Timer::m_sync;
+thread_local std::function<void()> Timer::m_sync;
 
 Timer::Timer(std::string_view blockName, bool force_on)
     : m_force_on(force_on)
@@ -114,9 +114,9 @@ Timer::~Timer()
     t.tock();
 }
 
-GlobalTimer GlobalTimer::default_instance;
+thread_local GlobalTimer GlobalTimer::default_instance;
 
-GlobalTimer* GlobalTimer::m_current = nullptr;
+thread_local GlobalTimer* GlobalTimer::m_current = nullptr;
 
 auto GlobalTimer::push_timer(std::string_view name) -> STimer&
 {

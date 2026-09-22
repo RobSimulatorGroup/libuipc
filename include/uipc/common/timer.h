@@ -69,6 +69,7 @@ class UIPC_CORE_API Timer
     double      elapsed() const;
     static void disable_all() { m_global_on = false; }
     static void enable_all() { m_global_on = true; }
+    static bool enabled() { return m_global_on; }
     static void set_sync_func(std::function<void()> sync) { m_sync = sync; }
 
     static void report(std::ostream& o = std::cout);
@@ -78,8 +79,8 @@ class UIPC_CORE_API Timer
     void                         sync() const;
     details::ScopedTimer*        m_timer = nullptr;
     bool                         m_force_on;
-    static bool                  m_global_on;
-    static std::function<void()> m_sync;
+    static thread_local bool                  m_global_on;
+    static thread_local std::function<void()> m_sync;
 };
 
 class UIPC_CORE_API GlobalTimer
@@ -96,8 +97,8 @@ class UIPC_CORE_API GlobalTimer
     STimer& push_timer(std::string_view);
     STimer& pop_timer();
 
-    static GlobalTimer  default_instance;
-    static GlobalTimer* m_current;
+    static thread_local GlobalTimer  default_instance;
+    static thread_local GlobalTimer* m_current;
 
     void _print_timings(std::ostream& o, const STimer* timer, int depth);
 
